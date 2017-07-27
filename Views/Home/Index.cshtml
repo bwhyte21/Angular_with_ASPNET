@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron" ng-controller="myAppCtrl">
+    <h3>Simple addition</h3>
+    <div>{{2+2}}</div>
+    <h3>Angular Binding</h3>
+    <div>
+        <input type="text" ng-model="inputdata" /><br />
+        Output: {{inputdata}}<br />
+    </div>
+    <h3>Angular Controller</h3>
+    <div>
+        From Controller: {{somestring}}
+    </div>
+    <h3>Employee Info</h3>
+    <div>
+        @*reference employee properties as defined in employee model*@
+        @*using model to model assignment*@
+        First Name: {{angEmp.FirstName}} <br />
+        Last Name: {{angEmp.LastName}} <br />
+
+        @*submit button take in input and send data via click back to somestring*@
+        <input type="submit" ng-click="update(inputdata)" value="Update" /><br />
+    </div>
+    <h3>GitHub Info Retrieval</h3>
+    <div>
+        Name: {{user.name}}<br />
+        <div ng-hide="allusers == ''">@*hide from elements*@
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column 1</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="user in allusers">
+                    <td>{{user.name}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div>
+        @*trigger Github info retrieval*@
+        <button ng-click="findIt()">Find Name</button>
+    </div>
+</div>
