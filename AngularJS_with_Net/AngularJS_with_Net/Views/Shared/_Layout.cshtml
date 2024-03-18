@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en" ng-app="myApp">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -36,7 +36,44 @@
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
+    @*<script src="~/Scripts/ang/controller.js"></script>*@
+    <script type="text/javascript">
+        var myApp = angular.module('myApp', []);
 
+        //$scope is like a viewbag in code behind
+        myApp.controller('myAppCtrl', function ($scope, $http) {
+            $scope.allusers= '';
+            $scope.somestring = 'test string';
+            // encode .net model to angular model
+            $scope.angEmp = @Html.Raw(Json.Encode(Model));
+
+            var onFindComplete = function(response){
+                $scope.user = response.data;
+                $http.get($scope.user.repos_url).then(onFindAllComplete);
+            };
+            var onFindAllComplete = function(response) {
+                $scope.allusers = response.data;
+            };
+
+            // retrieve info from github profile
+            $scope.findIt = function () {
+                $http.get("https://api.github.com/users/bwhyte21").then(onFindComplete);
+            };
+
+            // update function for somestring
+            $scope.update = function (angStr) {
+                // angular service = $http
+                // allow to send data back thru model as accessed thru angular
+                $http({
+                    url: '/Home/UpdateData?angStr=' + angStr,
+                    method: 'GET'})
+                    .then(function(response){
+                        $scope.somestring = response.data.Extra; // overwriting somestring with data
+                        $scope.angEmp = response.data;
+                    });
+            };
+        });
+    </script>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
